@@ -29,7 +29,8 @@ with open('packages.json') as packages_json:
     newlist = [i for i in my_list if i["status"] == False]
     if len(newlist) > 0:
             print("------Failed Packages Are-------")
-            print([i["package"] for i in newlist])
+            for i in newlist:
+                    print(i["package"])
     else:
             print("Success")
     
