@@ -1,18 +1,21 @@
 import json
 
 def install_and_import(package):
+    
         import pip
         from pip._internal import main as pipmain
         pipmain(['install', package])
+    
         import imp
         try:
             imp.find_module(package)
             found = True
         except ImportError:
-            found = True
+            found = False
         finally:
             return found
-        
+
+
 with open('packages.json') as packages_json:
     import importlib.util
     import sys
@@ -20,10 +23,13 @@ with open('packages.json') as packages_json:
     my_list = []
     for p in packages['Dependencies']:
         result = install_and_import((p['name']))
-        my_list.append(result)
-    indexes = [index for index in range(len(my_list)) if my_list[index] == False]
-    print(len(indexes));
-    if len(indexes) >= 0:
-        print("Success")
+        my_list.append({"status":result,"package":p["name"]})
+
+    
+    newlist = [i for i in my_list if i["status"] == False]
+    if len(newlist) > 0:
+            print("------Failed Packages Are-------")
+            print([i["package"] for i in newlist])
     else:
-        print("Failure")
+            print("Success")
+    
